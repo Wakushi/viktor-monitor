@@ -46,10 +46,10 @@ export default function HistoricalAnalysis() {
       const response = await fetch("/api/analysis")
       const { data } = await response.json()
 
-      const twentyFourHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000)
+      const twelveHoursAgo = new Date(Date.now() - 1 * 60 * 60 * 1000)
+
       const filteredAnalyses = data.filter(
-        (analysis: Analyse) =>
-          new Date(analysis.created_at) < twentyFourHoursAgo
+        (analysis: Analyse) => new Date(analysis.created_at) < twelveHoursAgo
       )
 
       setAnalyses(filteredAnalyses)
@@ -157,6 +157,11 @@ export default function HistoricalAnalysis() {
     setTokenInfo(data)
   }
 
+  function getElapsedTime(analysis: AnalysisPerformance) {
+    const elapsedTime = Date.now() - new Date(analysis.created_at).getTime()
+    return Math.floor(elapsedTime / (60 * 60 * 1000))
+  }
+
   if (isLoading) {
     return <HistoricalAnalysisSkeleton />
   }
@@ -175,7 +180,7 @@ export default function HistoricalAnalysis() {
         <div className="flex items-center gap-2 border rounded-md p-4">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            No historical analyses found that are older than 24 hours.
+            No historical analyses found that are older than 12 hours.
           </AlertDescription>
         </div>
       ) : (
@@ -184,7 +189,8 @@ export default function HistoricalAnalysis() {
             <Card key={analysis.id} className="h-[400px] overflow-scroll">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-xl font-bold">
-                  Analysis from {new Date(analysis.created_at).toLocaleString()}
+                  Analysis from {new Date(analysis.created_at).toLocaleString()}{" "}
+                  ({getElapsedTime(analysis)}h ago)
                 </CardTitle>
                 <Button
                   onClick={() => checkPerformance(analysis.id)}
