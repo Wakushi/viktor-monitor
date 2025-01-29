@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { TrendingUp, Hash, ArrowUpDown } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
-import { Token } from "@/types/analysis.type"
+import { Token, TokenPerformance } from "@/types/analysis.type"
 
 export interface TokenStats {
   token?: Token
@@ -11,6 +11,7 @@ export interface TokenStats {
   latestPrice: string
   firstSeen: string
   lastSeen: string
+  performance?: TokenPerformance
 }
 
 export const columns: ColumnDef<TokenStats>[] = [
@@ -113,13 +114,15 @@ export const columns: ColumnDef<TokenStats>[] = [
         className="p-0 hover:bg-transparent"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Latest Price
+        Last Buying Price
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => (
-      <div className="font-mono">{row.getValue("latestPrice")}</div>
-    ),
+    cell: ({ row }) => {
+      const latestPrice: number = row.getValue("latestPrice")
+
+      return <div className="font-mono">{latestPrice}</div>
+    },
   },
   {
     accessorKey: "firstSeen",

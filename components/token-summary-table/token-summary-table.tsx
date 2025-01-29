@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {
@@ -21,12 +21,14 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { columns, TokenStats } from "./columns"
+import { CoinCodexBaseTokenData } from "@/types/coin-codex.type"
 
 interface TokenSummaryProps {
   analyses: Analyse[]
 }
 
 export default function TokenSummaryTable({ analyses }: TokenSummaryProps) {
+  const [tokensInfo, setTokenInfo] = useState<CoinCodexBaseTokenData[]>([])
   const [topCount, setTopCount] = useState<number>(10)
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: addDays(new Date(), -7),
@@ -35,6 +37,12 @@ export default function TokenSummaryTable({ analyses }: TokenSummaryProps) {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "averageConfidence", desc: true },
   ])
+
+  useEffect(() => {
+    if (!analyses || !analyses.length) return
+
+    fetchTokensInfo()
+  }, [analyses])
 
   const tokenStats = useMemo(() => {
     const filteredAnalyses = analyses.filter((analysis) => {
@@ -66,8 +74,14 @@ export default function TokenSummaryTable({ analyses }: TokenSummaryProps) {
           existing.latestPrice = result.price
           existing.lastSeen = analysis.created_at
         } else {
+          const token = tokenInfoMap.get(result.token)
+
+          if (!token) return
+
+          // const performance = checkTokenPerformance(token)
+
           statsMap.set(result.token, {
-            token: tokenInfoMap.get(result.token),
+            token,
             occurrences: 1,
             averageConfidence: confidence,
             latestPrice: result.price,
@@ -91,6 +105,56 @@ export default function TokenSummaryTable({ analyses }: TokenSummaryProps) {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   })
+
+  async function fetchTokensInfo() {
+    const response = await fetch("/api/tokens")
+
+    if (!response.ok) return
+
+    const { data } = await response.json()
+
+    setTokenInfo(data)
+  }
+
+  // function checkTokenPerformance(token: Token) {
+  //   const lowercasedName = token.metadata.name.toLowerCase()
+  //   const lowercasedNameVariant = lowercasedName.replaceAll(" ", "-")
+  //   const lowercasedId = token.metadata.id.toLowerCase()
+  //   const lowercasedIdVariant = lowercasedId.replaceAll(" ", "-")
+
+  //   const matchingToken = tokensInfo.find((tokenInfo) => {
+  //     const possibleMatches = [
+  //       tokenInfo.ccu_slug.toLowerCase(),
+  //       tokenInfo.name.toLowerCase(),
+  //       tokenInfo.shortname.toLowerCase(),
+  //       tokenInfo.symbol.toLowerCase(),
+  //       tokenInfo.display_symbol.toLowerCase(),
+  //       tokenInfo.aliases.toLowerCase(),
+  //       tokenInfo.name.toLowerCase(),
+  //     ]
+
+  //     return (
+  //       possibleMatches.includes(lowercasedId) ||
+  //       possibleMatches.includes(lowercasedIdVariant) ||
+  //       possibleMatches.includes(lowercasedName) ||
+  //       possibleMatches.includes(lowercasedNameVariant)
+  //     )
+  //   })
+
+  //   const initialPrice = token.market.price_usd
+  //   const currentPrice = matchingToken?.last_price_usd || 0
+  //   const priceChange = currentPrice - initialPrice
+
+  //   const performance = {
+  //     token: token.metadata.name,
+  //     initialPrice: token.market.price_usd,
+  //     currentPrice: matchingToken?.last_price_usd || 0,
+  //     priceChange: currentPrice - initialPrice,
+  //     percentageChange: (priceChange / initialPrice) * 100,
+  //   }
+
+  //   return performance
+  // }
 
   return (
     <Card className="w-full">

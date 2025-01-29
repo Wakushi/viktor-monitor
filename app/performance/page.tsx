@@ -15,28 +15,12 @@ import {
 } from "lucide-react"
 import { AlertDescription } from "@/components/ui/alert"
 import type { Analyse } from "@/types/analysis.type"
-import { CoinCodexBaseTokenData } from "@/types/coin-codex.type"
-
-interface TokenPerformance {
-  token: string
-  initialPrice: number
-  currentPrice: number
-  priceChange: number
-  percentageChange: number
-}
-
-interface AnalysisPerformance extends Analyse {
-  isLoading?: boolean
-  performance?: TokenPerformance[]
-}
 
 export default function HistoricalAnalysis() {
-  const [analyses, setAnalyses] = useState<AnalysisPerformance[]>([])
+  const [analyses, setAnalyses] = useState<Analyse[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [tokensInfo, setTokenInfo] = useState<CoinCodexBaseTokenData[]>([])
 
   useEffect(() => {
-    fetchTokensInfo()
     fetchHistoricalAnalyses()
   }, [])
 
@@ -60,104 +44,7 @@ export default function HistoricalAnalysis() {
     }
   }
 
-  async function checkPerformance(analysisId: number) {
-    const analysis = analyses.find((a) => a.id === analysisId)
-
-    if (!analysis) return
-
-    setAnalyses((prev) =>
-      prev.map((a) => (a.id === analysisId ? { ...a, isLoading: true } : a))
-    )
-
-    try {
-      const tokenIds = analysis.analysis.analysis.map((t) => ({
-        name: t.token.metadata.name,
-        id: t.token.metadata.id,
-      }))
-
-      const currentPrices: Map<number, number> = new Map()
-
-      for (const token of tokensInfo) {
-        if (currentPrices.size === tokenIds.length) continue
-
-        const matchingToken = tokenIds.find((tokenId) => {
-          const lowercasedName = tokenId.name.toLowerCase()
-          const lowercasedNameVariant = lowercasedName.replaceAll(" ", "-")
-          const lowercasedId = tokenId.id.toLowerCase()
-          const lowercasedIdVariant = lowercasedId.replaceAll(" ", "-")
-
-          const possibleMatches = [
-            token.ccu_slug.toLowerCase(),
-            token.name.toLowerCase(),
-            token.shortname.toLowerCase(),
-            token.symbol.toLowerCase(),
-            token.display_symbol.toLowerCase(),
-            token.aliases.toLowerCase(),
-            token.name.toLowerCase(),
-          ]
-
-          return (
-            possibleMatches.includes(lowercasedId) ||
-            possibleMatches.includes(lowercasedIdVariant) ||
-            possibleMatches.includes(lowercasedName) ||
-            possibleMatches.includes(lowercasedNameVariant)
-          )
-        })
-
-        if (matchingToken) {
-          currentPrices.set(
-            tokenIds.indexOf(matchingToken),
-            token.last_price_usd
-          )
-        }
-      }
-
-      const performance = analysis.analysis.formattedResults.map(
-        (result, index) => {
-          const initialPrice = parseFloat(result.price.replace("$", ""))
-          const currentPrice = currentPrices.get(index) || 0
-          const priceChange = currentPrice - initialPrice
-          const percentageChange = (priceChange / initialPrice) * 100
-
-          return {
-            token: result.token,
-            initialPrice,
-            currentPrice,
-            priceChange,
-            percentageChange,
-          }
-        }
-      )
-
-      setAnalyses((prev) =>
-        prev.map((a) =>
-          a.id === analysisId ? { ...a, performance, isLoading: false } : a
-        )
-      )
-    } catch (error) {
-      console.error(
-        `Failed to check performance for analysis ${analysisId}:`,
-        error
-      )
-      setAnalyses((prev) =>
-        prev.map((a) => (a.id === analysisId ? { ...a, isLoading: false } : a))
-      )
-    }
-  }
-
-  async function fetchTokensInfo() {
-    const response = await fetch("/api/tokens")
-
-    if (!response.ok) return
-
-    const { data } = await response.json()
-
-    console.log("Fetched token data !")
-
-    setTokenInfo(data)
-  }
-
-  function getElapsedTime(analysis: AnalysisPerformance) {
+  function getElapsedTime(analysis: Analyse) {
     const elapsedTime = Date.now() - new Date(analysis.created_at).getTime()
     return Math.floor(elapsedTime / (60 * 60 * 1000))
   }
@@ -192,22 +79,6 @@ export default function HistoricalAnalysis() {
                   Analysis from {new Date(analysis.created_at).toLocaleString()}{" "}
                   ({getElapsedTime(analysis)}h ago)
                 </CardTitle>
-                <Button
-                  onClick={() => checkPerformance(analysis.id)}
-                  disabled={!tokensInfo?.length || analysis.isLoading}
-                >
-                  {analysis.isLoading ? (
-                    <>
-                      <RefreshCcw className="mr-2 h-4 w-4 animate-spin" />
-                      Checking...
-                    </>
-                  ) : (
-                    <>
-                      <Clock className="mr-2 h-4 w-4" />
-                      Check Performance
-                    </>
-                  )}
-                </Button>
               </CardHeader>
               <CardContent>
                 <ScrollArea className="w-full">
@@ -236,7 +107,7 @@ export default function HistoricalAnalysis() {
                                 Current: $
                                 {analysis.performance[
                                   index
-                                ].currentPrice.toFixed(6)}
+                                ].currentPrice?.toFixed(6)}
                               </p>
                               <div className="flex items-center justify-end">
                                 {analysis.performance[index].percentageChange >=
@@ -247,7 +118,7 @@ export default function HistoricalAnalysis() {
                                       +
                                       {analysis.performance[
                                         index
-                                      ].percentageChange.toFixed(2)}
+                                      ].percentageChange?.toFixed(2)}
                                       %
                                     </span>
                                   </>
@@ -257,7 +128,7 @@ export default function HistoricalAnalysis() {
                                     <span className="text-red-500">
                                       {analysis.performance[
                                         index
-                                      ].percentageChange.toFixed(2)}
+                                      ].percentageChange?.toFixed(2)}
                                       %
                                     </span>
                                   </>

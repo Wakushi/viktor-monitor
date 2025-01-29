@@ -100,4 +100,13 @@ export type Analyse = {
   id: number
   created_at: string
   analysis: Analysis
+  performance?: TokenPerformance[]
+}
+
+export type TokenPerformance = {
+  token: string
+  initialPrice: number
+  currentPrice: number
+  priceChange: number
+  percentageChange: number
 }

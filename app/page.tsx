@@ -8,8 +8,8 @@ import { Analyse } from "@/types/analysis.type"
 import { useEffect, useState } from "react"
 
 export default function Home() {
-  const [analyses, setAnalyses] = useState<Analyse[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [analyses, setAnalyses] = useState<Analyse[]>([])
 
   useEffect(() => {
     async function fetchAnalysis() {
