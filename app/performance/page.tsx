@@ -104,7 +104,7 @@ export default function HistoricalAnalysis() {
                           <div className="flex items-center space-x-4">
                             <div className="text-right">
                               <p className="font-medium">
-                                Current: $
+                                T+24h: $
                                 {analysis.performance[
                                   index
                                 ].currentPrice?.toFixed(6)}
