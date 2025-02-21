@@ -3,14 +3,11 @@ import { NextResponse } from "next/server"
 
 export async function GET(): Promise<NextResponse> {
   try {
-    const response = await fetch(
-      "http://srv691031.hstgr.cloud/agent/analysis",
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.API_SECRET}`,
-        },
-      }
-    )
+    const response = await fetch("https://agent-whal-e.fr/agent/analysis", {
+      headers: {
+        Authorization: `Bearer ${process.env.API_SECRET}`,
+      },
+    })
 
     const data = await response.json()
 
