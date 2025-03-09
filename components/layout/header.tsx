@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { Bot, LineChart } from "lucide-react"
+import { Bot, LineChart, ChartBar } from "lucide-react"
 
 export default function Header() {
   const pathname = usePathname()
@@ -18,6 +18,11 @@ export default function Header() {
       href: "/performance",
       label: "Performance History",
       icon: LineChart,
+    },
+    {
+      href: "/confidence",
+      label: "Confidence Chart",
+      icon: ChartBar,
     },
   ]
 
