@@ -46,7 +46,7 @@ export default function PerformanceScatterPlot({
                 dataKey="buyingConfidence"
                 name="Buying Confidence"
                 unit="%"
-                domain={[0, 100]}
+                domain={[60, 100]}
               />
               <YAxis
                 type="number"
@@ -62,23 +62,6 @@ export default function PerformanceScatterPlot({
                 fill="#8884d8"
                 shape="circle"
                 fillOpacity={0.6}
-              />
-              {/* Quadrant separators */}
-              <line
-                x1={50}
-                y1={-1000}
-                x2={50}
-                y2={1000}
-                stroke="#aaa"
-                strokeDasharray="3 3"
-              />
-              <line
-                x1={0}
-                y1={0}
-                x2={100}
-                y2={0}
-                stroke="#aaa"
-                strokeDasharray="3 3"
               />
             </ScatterChart>
           </ResponsiveContainer>
