@@ -101,6 +101,7 @@ export type Analyse = {
   created_at: string
   analysis: Analysis
   performance?: TokenPerformance[]
+  fearAndGreedIndex?: string
 }
 
 export type TokenPerformance = {

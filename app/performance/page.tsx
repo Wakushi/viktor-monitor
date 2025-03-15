@@ -7,6 +7,7 @@ import { ArrowDown, ArrowUp } from "lucide-react"
 import type { Analyse } from "@/types/analysis.type"
 import HistoricalAnalysisSkeleton from "@/components/historical-analysis-skeleton"
 import { useAnalysis } from "@/stores/analysis.store"
+import FearGreedBadge from "@/components/fear-and-greed-badge"
 
 export default function HistoricalAnalysis() {
   const { analyses, isLoading } = useAnalysis()
@@ -30,9 +31,16 @@ export default function HistoricalAnalysis() {
         {analyses.map((analysis) => (
           <Card key={analysis.id} className="h-[400px] overflow-scroll">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xl font-bold">
-                Analysis from {new Date(analysis.created_at).toLocaleString()} (
-                {getElapsedTime(analysis)}h ago)
+              <CardTitle className="text-xl font-bold flex items-center justify-between w-full">
+                <span>
+                  Analysis from {new Date(analysis.created_at).toLocaleString()}{" "}
+                  ({getElapsedTime(analysis)}h ago)
+                </span>
+                {analysis.fearAndGreedIndex && (
+                  <FearGreedBadge
+                    fearAndGreedIndex={Number(analysis.fearAndGreedIndex)}
+                  />
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
