@@ -1,11 +1,36 @@
 import _ from "lodash"
-import { Analyse } from "@/types/analysis.type"
+import { Analyse, FormattedResult } from "@/types/analysis.type"
 import { AverageMetrics, ScatterDataPoint } from "./confidence-metrics.types"
 
-export function processAnalysisData(analyses: Analyse[]) {
+export function processAnalysisData(
+  analyses: Analyse[],
+  confidenceFilter: number = 0
+) {
   const processedScatterData: ScatterDataPoint[] = []
 
-  analyses.forEach((analyse) => {
+  const filteredAnalysis = analyses.map((analyse: Analyse) => {
+    const filteredResults = analyse.analysis.formattedResults
+      .map((result: FormattedResult) => {
+        return Number(result.buyingConfidence.slice(0, 5)) > confidenceFilter
+          ? result
+          : null
+      })
+      .filter((result) => !!result)
+
+    const filteredPerformances = analyse.performance
+      ? analyse.performance.filter((performance) => {
+          return filteredResults.some((res) => res.token === performance.token)
+        })
+      : []
+
+    return {
+      ...analyse,
+      performance: filteredPerformances,
+      analysis: { ...analyse.analysis, formattedResults: filteredResults },
+    }
+  })
+
+  filteredAnalysis.forEach((analyse) => {
     const formattedResults = analyse.analysis.formattedResults || []
     const performances = analyse.performance || []
 

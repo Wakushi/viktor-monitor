@@ -1,12 +1,19 @@
 import React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AverageMetrics } from "./confidence-metrics.types"
+import { Slider } from "../ui/slider"
 
 interface MetricsCardsProps {
   averageMetrics: AverageMetrics | null
+  minConfidenceFilter: number
+  setMinConfidenceFilter: (min: number) => void
 }
 
-export default function MetricsCards({ averageMetrics }: MetricsCardsProps) {
+export default function MetricsCards({
+  averageMetrics,
+  setMinConfidenceFilter,
+  minConfidenceFilter,
+}: MetricsCardsProps) {
   if (!averageMetrics) return null
 
   return (
@@ -26,7 +33,7 @@ export default function MetricsCards({ averageMetrics }: MetricsCardsProps) {
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">Average Performance</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col gap-3">
           <p
             className={`text-2xl font-bold ${
               averageMetrics.avgPerformance > 0
@@ -36,6 +43,14 @@ export default function MetricsCards({ averageMetrics }: MetricsCardsProps) {
           >
             {averageMetrics.avgPerformance.toFixed(2)}%
           </p>
+          <p>Minimum confidence filter: {minConfidenceFilter}%</p>
+          <Slider
+            onValueChange={([v]) => setMinConfidenceFilter(v)}
+            value={[minConfidenceFilter]}
+            defaultValue={[minConfidenceFilter]}
+            max={100}
+            step={1}
+          />
         </CardContent>
       </Card>
 

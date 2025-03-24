@@ -16,17 +16,20 @@ export default function CryptoPerformanceDashboard() {
   const [averageMetrics, setAverageMetrics] = useState<AverageMetrics | null>(
     null
   )
+  const [minConfidenceFilter, setMinConfidenceFilter] = useState<number>(70)
   const { analyses, isLoading } = useAnalysis()
 
   useEffect(() => {
     if (!analyses || analyses.length === 0) return
 
-    const { processedScatterData, calculatedMetrics } =
-      processAnalysisData(analyses)
+    const { processedScatterData, calculatedMetrics } = processAnalysisData(
+      analyses,
+      minConfidenceFilter
+    )
 
     setScatterData(processedScatterData)
     setAverageMetrics(calculatedMetrics)
-  }, [analyses])
+  }, [analyses, minConfidenceFilter])
 
   if (isLoading) {
     return <HistoricalAnalysisSkeleton />
@@ -34,7 +37,11 @@ export default function CryptoPerformanceDashboard() {
 
   return (
     <div className="w-full space-y-6 p-4">
-      <MetricsCards averageMetrics={averageMetrics} />
+      <MetricsCards
+        averageMetrics={averageMetrics}
+        minConfidenceFilter={minConfidenceFilter}
+        setMinConfidenceFilter={setMinConfidenceFilter}
+      />
 
       <PerformanceScatterPlot scatterData={scatterData} />
 
