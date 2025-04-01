@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 
 export async function GET(): Promise<NextResponse> {
   try {
-    const response = await fetch("https://agent-whal-e.fr/agent/analysis", {
+    const response = await fetch("https://viktor.wakushi.com/agent/analysis", {
       headers: {
         Authorization: `Bearer ${process.env.API_SECRET}`,
       },
