@@ -82,8 +82,14 @@ export function processAnalysisData(
   })
 
   // Calculate metrics
-  const avgConfidence = _.meanBy(processedScatterData, "buyingConfidence")
-  const avgPerformance = _.meanBy(processedScatterData, "percentageChange")
+  const avgConfidence = processedScatterData.length
+    ? _.meanBy(processedScatterData, "buyingConfidence")
+    : 0
+
+  const avgPerformance = processedScatterData.length
+    ? _.meanBy(processedScatterData, "percentageChange")
+    : 0
+
   const positivePerformances = processedScatterData.filter(
     (item) => item.percentageChange > 0
   )

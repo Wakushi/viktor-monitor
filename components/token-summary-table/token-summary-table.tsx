@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table"
 import { DatePickerWithRange } from "@/components/ui/date-range-picker"
 import { addDays } from "date-fns"
-import type { Analyse, Token } from "@/types/analysis.type"
+import type { Analyse, TokenMarketObservation } from "@/types/analysis.type"
 import type { DateRange } from "react-day-picker"
 import {
   SortingState,
@@ -44,16 +44,16 @@ export default function TokenSummaryTable({ analyses }: TokenSummaryProps) {
     })
 
     const statsMap = new Map<string, TokenStats>()
-    const tokenInfoMap = new Map<string, Token>()
+    const tokenInfoMap = new Map<string, TokenMarketObservation>()
 
-    filteredAnalyses.forEach((analysis) => {
-      analysis.analysis.analysis.forEach((a) => {
-        if (!tokenInfoMap.get(a.token.metadata.name)) {
-          tokenInfoMap.set(a.token.metadata.name, a.token)
+    filteredAnalyses.forEach((completeAnalysis) => {
+      completeAnalysis.analysis.analysis.forEach((a) => {
+        if (!tokenInfoMap.get(a.token.name)) {
+          tokenInfoMap.set(a.token.name, a.token)
         }
       })
 
-      analysis.analysis.formattedResults.forEach((result) => {
+      completeAnalysis.analysis.formattedResults.forEach((result) => {
         const existing = statsMap.get(result.token)
         const confidence = parseFloat(result.buyingConfidence.replace("%", ""))
 
@@ -64,7 +64,7 @@ export default function TokenSummaryTable({ analyses }: TokenSummaryProps) {
               confidence) /
             existing.occurrences
           existing.latestPrice = result.price
-          existing.lastSeen = analysis.created_at
+          existing.lastSeen = completeAnalysis.created_at
         } else {
           const token = tokenInfoMap.get(result.token)
 
@@ -75,8 +75,8 @@ export default function TokenSummaryTable({ analyses }: TokenSummaryProps) {
             occurrences: 1,
             averageConfidence: confidence,
             latestPrice: result.price,
-            firstSeen: analysis.created_at,
-            lastSeen: analysis.created_at,
+            firstSeen: completeAnalysis.created_at,
+            lastSeen: completeAnalysis.created_at,
           })
         }
       })

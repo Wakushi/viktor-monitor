@@ -21,6 +21,10 @@ export default function HistoricalAnalysis() {
     return <HistoricalAnalysisSkeleton />
   }
 
+  const formattedPrice = (price: string): string => {
+    return parseFloat(price.replace("$", "")).toFixed(7)
+  }
+
   return (
     <div className="container mx-auto py-8 space-y-6">
       <div className="flex justify-between items-center">
@@ -36,9 +40,9 @@ export default function HistoricalAnalysis() {
                   Analysis from {new Date(analysis.created_at).toLocaleString()}{" "}
                   ({getElapsedTime(analysis)}h ago)
                 </span>
-                {analysis.fearAndGreedIndex && (
+                {analysis.fear_and_greed_index && (
                   <FearGreedBadge
-                    fearAndGreedIndex={Number(analysis.fearAndGreedIndex)}
+                    fearAndGreedIndex={Number(analysis.fear_and_greed_index)}
                   />
                 )}
               </CardTitle>
@@ -55,7 +59,7 @@ export default function HistoricalAnalysis() {
                         <div>
                           <p className="font-medium">{result.token}</p>
                           <p className="text-sm text-muted-foreground">
-                            Initial Price: {result.price}
+                            Initial Price: ${formattedPrice(result.price)}
                           </p>
                         </div>
                         <Badge variant="secondary">

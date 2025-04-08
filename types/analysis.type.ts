@@ -1,59 +1,44 @@
-export type ContractAddress = {
-  decimal_place: number
-  contract_address: string
+export type Contract = {
+  address: string
+  blockchainId: string
+  blockchain: string
+  decimals: number
 }
 
-export type TokenMetadata = {
-  id: string
-  symbol: string
+export type TokenMarketObservation = {
+  key: string
+  id: number
   name: string
-  contract_addresses: {
-    [chain: string]: ContractAddress
-  }
-  market_cap_rank: number
-  genesis_date: string | null
-  categories: string[]
-  links: {
-    github: string[]
-    twitter: string
-    website: string[]
-    telegram: string
-  }
-  platforms: {
-    [chain: string]: string
-  }
-  last_updated: string
-  created_at: string
-}
-
-export type TokenMarket = {
-  coin_gecko_id: string
-  timestamp: number
-  created_at: string
-  market_cap_rank: number
-  price_usd: number
-  high_24h: number
-  low_24h: number
-  ath: number
-  ath_change_percentage: number
-  atl: number
-  total_volume: number
-  atl_change_percentage: number
+  symbol: string
+  decimals: number
+  logo: string
+  rank: number | null
+  price: number
   market_cap: number
-  fully_diluted_valuation: number
-  circulating_supply: number
-  total_supply: number
-  max_supply: number | null
-  supply_ratio: number
+  market_cap_diluted: number
+  volume: number
+  volume_change_24h: number
+  volume_7d: number
+  liquidity: number
+  ath: number
+  atl: number
+  off_chain_volume: number
+  is_listed: boolean
+  price_change_1h: number
   price_change_24h: number
-  price_change_percentage_24h: number
-  market_cap_change_24h: number
-  market_cap_change_percentage_24h: number
+  price_change_7d: number
+  price_change_1m: number
+  price_change_1y: number
+  total_supply: number
+  circulating_supply: number
+  contracts: Contract[]
+  timestamp: number
+  extra?: MobulaTokenSocials
 }
 
-export type Token = {
-  market: TokenMarket
-  metadata: TokenMetadata
+export interface MobulaTokenSocials {
+  twitter?: string
+  website?: string
 }
 
 export type BuyingConfidenceMetrics = {
@@ -79,7 +64,8 @@ export type DecisionTypeRatio = {
 }
 
 export type TokenAnalysis = {
-  token: Token
+  token: TokenMarketObservation
+  textObservation: string
   buyingConfidence: BuyingConfidence
   similarDecisionsAmount: number
   decisionTypeRatio: DecisionTypeRatio
@@ -96,18 +82,18 @@ export type Analysis = {
   analysis: TokenAnalysis[]
 }
 
-export type Analyse = {
-  id: number
-  created_at: string
-  analysis: Analysis
-  performance?: TokenPerformance[]
-  fearAndGreedIndex?: string
-}
-
 export type TokenPerformance = {
   token: string
   initialPrice: number
   currentPrice: number
   priceChange: number
   percentageChange: number
+}
+
+export type Analyse = {
+  id: number
+  created_at: string
+  analysis: Analysis
+  performance?: TokenPerformance[]
+  fear_and_greed_index?: string
 }
