@@ -7,18 +7,18 @@ import { AnalysisTimelineSkeleton } from "@/components/analysis-timeline-skeleto
 import { useAnalysis } from "@/stores/analysis.store"
 
 export default function Home() {
-  const { analyses, isLoading } = useAnalysis()
+  const { analyses, isLoading, fromCloud } = useAnalysis()
 
   return (
     <div className="p-4 space-y-8">
       {isLoading ? (
         <>
-          <TokenSummarySkeleton />
+          {!fromCloud && <TokenSummarySkeleton />}
           <AnalysisTimelineSkeleton />
         </>
       ) : (
         <>
-          <TokenSummary analyses={analyses} />
+          {!fromCloud && <TokenSummary analyses={analyses} />}
           <AnalysisTimeline analyses={analyses} />
         </>
       )}

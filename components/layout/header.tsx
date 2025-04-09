@@ -4,9 +4,12 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Bot, LineChart, ChartBar } from "lucide-react"
+import { useAnalysis } from "@/stores/analysis.store"
+import { Switch } from "../ui/switch"
 
 export default function Header() {
   const pathname = usePathname()
+  const { toggleFromCloud } = useAnalysis()
 
   const links = [
     {
@@ -27,7 +30,7 @@ export default function Header() {
   ]
 
   return (
-    <header className="sticky px-4 top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="flex items-center justify-between sticky px-4 top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <div className="mr-4 flex">
           <Link href="/" className="flex items-center space-x-2">
@@ -50,6 +53,11 @@ export default function Header() {
             </Link>
           ))}
         </nav>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="text-sm font-bold">v2</div>
+        <Switch onCheckedChange={toggleFromCloud} />
+        <div className="text-sm font-bold">v1</div>
       </div>
     </header>
   )
