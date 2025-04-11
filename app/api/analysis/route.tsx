@@ -21,24 +21,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       throw new Error(data.message)
     }
 
-    const analyses: Analyse[] = data.map((analyse: Analyse) => {
-      if (!analyse.performance) return analyse
-
-      const p = analyse.performance.map((perf) =>
-        Math.abs(perf.percentageChange) > 80
-          ? { ...perf, percentageChange: 0 }
-          : perf
-      )
-
-      return { ...analyse, performance: p }
-    })
-
-    analyses.sort(
-      (a, b) =>
+    data.sort(
+      (a: Analyse, b: Analyse) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )
 
-    return NextResponse.json({ success: true, data: analyses }, { status: 200 })
+    return NextResponse.json({ success: true, data }, { status: 200 })
   } catch (error: any) {
     if (error.message === "Unauthorized") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 400 })
