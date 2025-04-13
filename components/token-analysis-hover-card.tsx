@@ -126,7 +126,7 @@ export default function TokenHoverCard({
                       {token.extra.twitter && (
                         <li>
                           <a
-                            href={`https://twitter.com/${token.extra.twitter}`}
+                            href={token.extra.twitter}
                             className="text-primary underline flex items-center space-x-1"
                             target="_blank"
                             rel="noopener noreferrer"
