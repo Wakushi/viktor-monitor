@@ -8,6 +8,7 @@ import type { Analyse } from "@/types/analysis.type"
 import HistoricalAnalysisSkeleton from "@/components/historical-analysis-skeleton"
 import { useAnalysis } from "@/stores/analysis.store"
 import FearGreedBadge from "@/components/fear-and-greed-badge"
+import TokenHoverCard from "@/components/token-analysis-hover-card"
 
 export default function HistoricalAnalysis() {
   const { analyses, isLoading } = useAnalysis()
@@ -23,6 +24,18 @@ export default function HistoricalAnalysis() {
 
   const formattedPrice = (price: string): string => {
     return parseFloat(price.replace("$", "")).toFixed(7)
+  }
+
+  function getTokenAnalysis(tokenName: string, analysisId: number) {
+    const analysis = analyses.find((a) => a.id === analysisId)
+
+    if (!analysis) return
+
+    const tokenAnalysis = analysis.analysis.analysis.find(
+      (a) => a.token.name === tokenName
+    )
+
+    return tokenAnalysis
   }
 
   return (
@@ -49,62 +62,64 @@ export default function HistoricalAnalysis() {
             </CardHeader>
             <CardContent>
               <ScrollArea className="w-full">
-                <div className="space-y-4">
+                <div className="flex flex-col gap-2">
                   {analysis.analysis.formattedResults.map((result, index) => (
-                    <div
+                    <TokenHoverCard
                       key={index}
-                      className="flex items-center justify-between p-4 border rounded-lg"
+                      analysis={getTokenAnalysis(result.token, analysis.id)}
                     >
-                      <div className="flex items-center space-x-4">
-                        <div>
-                          <p className="font-medium">{result.token}</p>
-                          <p className="text-sm text-muted-foreground">
-                            Initial Price: ${formattedPrice(result.price)}
-                          </p>
-                        </div>
-                        <Badge variant="secondary">
-                          Confidence: {result.buyingConfidence}
-                        </Badge>
-                      </div>
-
-                      {analysis.performance && (
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
                         <div className="flex items-center space-x-4">
-                          <div className="text-right">
-                            <p className="font-medium">
-                              T+24h: $
-                              {analysis.performance[
-                                index
-                              ].currentPrice?.toFixed(6)}
+                          <div>
+                            <p className="font-medium">{result.token}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Initial Price: ${formattedPrice(result.price)}
                             </p>
-                            <div className="flex items-center justify-end">
-                              {analysis.performance[index].percentageChange >=
-                              0 ? (
-                                <>
-                                  <ArrowUp className="h-4 w-4 text-green-500" />
-                                  <span className="text-green-500">
-                                    +
-                                    {analysis.performance[
-                                      index
-                                    ].percentageChange?.toFixed(2)}
-                                    %
-                                  </span>
-                                </>
-                              ) : (
-                                <>
-                                  <ArrowDown className="h-4 w-4 text-red-500" />
-                                  <span className="text-red-500">
-                                    {analysis.performance[
-                                      index
-                                    ].percentageChange?.toFixed(2)}
-                                    %
-                                  </span>
-                                </>
-                              )}
+                          </div>
+                          <Badge variant="secondary">
+                            Confidence: {result.buyingConfidence}
+                          </Badge>
+                        </div>
+
+                        {analysis.performance && (
+                          <div className="flex items-center space-x-4">
+                            <div className="text-right">
+                              <p className="font-medium">
+                                T+24h: $
+                                {analysis.performance[
+                                  index
+                                ].currentPrice?.toFixed(6)}
+                              </p>
+                              <div className="flex items-center justify-end">
+                                {analysis.performance[index].percentageChange >=
+                                0 ? (
+                                  <>
+                                    <ArrowUp className="h-4 w-4 text-green-500" />
+                                    <span className="text-green-500">
+                                      +
+                                      {analysis.performance[
+                                        index
+                                      ].percentageChange?.toFixed(2)}
+                                      %
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <ArrowDown className="h-4 w-4 text-red-500" />
+                                    <span className="text-red-500">
+                                      {analysis.performance[
+                                        index
+                                      ].percentageChange?.toFixed(2)}
+                                      %
+                                    </span>
+                                  </>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    </TokenHoverCard>
                   ))}
                 </div>
               </ScrollArea>
