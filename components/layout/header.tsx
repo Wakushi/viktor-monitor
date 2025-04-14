@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { Bot, LineChart, ChartBar } from "lucide-react"
+import { Bot, LineChart, ChartBar, EclipseIcon } from "lucide-react"
 import { useAnalysis } from "@/stores/analysis.store"
 import { Switch } from "../ui/switch"
 
@@ -13,19 +13,24 @@ export default function Header() {
 
   const links = [
     {
-      href: "/",
-      label: "Live Analysis",
-      icon: Bot,
+      href: "/performance",
+      label: "Day-based analysis",
+      icon: LineChart,
     },
     {
-      href: "/performance",
-      label: "Performance History",
-      icon: LineChart,
+      href: "/weekly",
+      label: "Week-based analysis",
+      icon: EclipseIcon,
     },
     {
       href: "/confidence",
       label: "Confidence Chart",
       icon: ChartBar,
+    },
+    {
+      href: "/",
+      label: "Summary",
+      icon: Bot,
     },
   ]
 
