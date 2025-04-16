@@ -3,31 +3,21 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { Bot, LineChart, ChartBar } from "lucide-react"
+import { Bot, EclipseIcon } from "lucide-react"
 
 export default function Header() {
   const pathname = usePathname()
 
   const links = [
     {
-      href: "/",
-      label: "Live Analysis",
-      icon: Bot,
-    },
-    {
-      href: "/performance",
-      label: "Performance History",
-      icon: LineChart,
-    },
-    {
-      href: "/confidence",
-      label: "Confidence Chart",
-      icon: ChartBar,
+      href: "/analysis",
+      label: "Analysis",
+      icon: EclipseIcon,
     },
   ]
 
   return (
-    <header className="sticky px-4 top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="flex items-center justify-between sticky px-4 top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <div className="mr-4 flex">
           <Link href="/" className="flex items-center space-x-2">

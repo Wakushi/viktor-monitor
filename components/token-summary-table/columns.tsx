@@ -2,10 +2,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { TrendingUp, Hash, ArrowUpDown } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
-import { Token, TokenPerformance } from "@/types/analysis.type"
+import { TokenMarketObservation, TokenPerformance } from "@/types/analysis.type"
 
 export interface TokenStats {
-  token?: Token
+  token?: TokenMarketObservation
   occurrences: number
   averageConfidence: number
   latestPrice: string
@@ -28,16 +28,14 @@ export const columns: ColumnDef<TokenStats>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const token: Token | undefined = row.getValue("token")
+      const token: TokenMarketObservation | undefined = row.getValue("token")
 
       if (!token) return <div className="font-medium">Unknown</div>
 
-      const twitterHandle = token.metadata.links.twitter
+      const twitterHandle = token?.extra?.twitter
       const twitterUrl = twitterHandle ? `https://x.com/${twitterHandle}` : ""
 
-      const url = token.metadata.links.website
-        ? token.metadata.links.website[0]
-        : ""
+      const url = token?.extra?.website
 
       return (
         <a
@@ -45,7 +43,7 @@ export const columns: ColumnDef<TokenStats>[] = [
           target="_blank"
           className="font-medium hover:underline"
         >
-          {token.metadata.name}
+          {token.name}
         </a>
       )
     },
@@ -120,8 +118,9 @@ export const columns: ColumnDef<TokenStats>[] = [
     ),
     cell: ({ row }) => {
       const latestPrice: number = row.getValue("latestPrice")
+      const price = parseFloat(String(latestPrice).replace("$", "")).toFixed(7)
 
-      return <div className="font-mono">{latestPrice}</div>
+      return <div className="font-mono">${price}</div>
     },
   },
   {

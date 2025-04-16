@@ -58,6 +58,10 @@ export default function AnalysisTimeline({
                     const confidence = parseFloat(
                       result.buyingConfidence.replace("%", "")
                     )
+
+                    const price = parseFloat(
+                      result.price.replace("$", "")
+                    ).toFixed(7)
                     return (
                       <Card key={index} className="w-[200px] flex-shrink-0">
                         <CardContent className="p-4">
@@ -74,7 +78,7 @@ export default function AnalysisTimeline({
                               <span className="text-sm text-muted-foreground">
                                 Price:
                               </span>
-                              <span className="font-mono">{result.price}</span>
+                              <span className="font-mono">${price}</span>
                             </div>
                             <div className="flex items-center justify-between">
                               <span className="text-sm text-muted-foreground">
