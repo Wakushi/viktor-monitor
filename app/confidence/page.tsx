@@ -19,7 +19,7 @@ export default function ConfidencePage() {
   if (isLoading) return <HistoricalAnalysisSkeleton />
 
   return (
-    <div>
+    <div className="flex flex-col gap-4 p-4">
       <MetricsCards
         averageMetrics={calculatedMetrics}
         minConfidenceFilter={minConfidenceFilter}
