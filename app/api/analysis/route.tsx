@@ -1,19 +1,13 @@
-import { Analyse } from "@/types/analysis.type"
-import { NextRequest, NextResponse } from "next/server"
+import { WeekAnalysisRecord } from "@/types/week-analysis.type"
+import { NextResponse } from "next/server"
 
-export async function GET(request: NextRequest): Promise<NextResponse> {
-  const searchParams = request.nextUrl.searchParams
-  const fromCloud = searchParams.get("fromCloud")
-
+export async function GET(): Promise<NextResponse> {
   try {
-    const response = await fetch(
-      `https://viktor.wakushi.com/agent/analysis?fromCloud=${fromCloud ?? ""}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.API_SECRET}`,
-        },
-      }
-    )
+    const response = await fetch("https://viktor.wakushi.com/analysis", {
+      headers: {
+        Authorization: `Bearer ${process.env.API_SECRET}`,
+      },
+    })
 
     const data = await response.json()
 
@@ -21,8 +15,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       throw new Error(data.message)
     }
 
-    data.sort(
-      (a: Analyse, b: Analyse) =>
+    ;(data as WeekAnalysisRecord[]).sort(
+      (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )
 

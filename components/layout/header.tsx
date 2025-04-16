@@ -3,34 +3,16 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { Bot, LineChart, ChartBar, EclipseIcon } from "lucide-react"
-import { useAnalysis } from "@/stores/analysis.store"
-import { Switch } from "../ui/switch"
+import { Bot, EclipseIcon } from "lucide-react"
 
 export default function Header() {
   const pathname = usePathname()
-  const { toggleFromCloud } = useAnalysis()
 
   const links = [
     {
-      href: "/performance",
-      label: "Day-based analysis",
-      icon: LineChart,
-    },
-    {
-      href: "/weekly",
-      label: "Week-based analysis",
+      href: "/analysis",
+      label: "Analysis",
       icon: EclipseIcon,
-    },
-    {
-      href: "/confidence",
-      label: "Confidence Chart",
-      icon: ChartBar,
-    },
-    {
-      href: "/",
-      label: "Summary",
-      icon: Bot,
     },
   ]
 
@@ -58,11 +40,6 @@ export default function Header() {
             </Link>
           ))}
         </nav>
-      </div>
-      <div className="flex items-center gap-2">
-        <div className="text-sm font-bold">v2</div>
-        <Switch onCheckedChange={toggleFromCloud} />
-        <div className="text-sm font-bold">v1</div>
       </div>
     </header>
   )

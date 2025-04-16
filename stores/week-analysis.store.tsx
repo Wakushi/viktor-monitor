@@ -43,7 +43,7 @@ export default function WeekAnalysisContextProvider(
       setIsLoading(true)
       setError(null)
 
-      const response = await fetch(`/api/week-analysis`)
+      const response = await fetch(`/api/analysis`)
       const { data } = await response.json()
 
       setWeekAnalysesRecords(data)
