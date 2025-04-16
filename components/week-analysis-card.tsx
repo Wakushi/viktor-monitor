@@ -18,6 +18,7 @@ import {
 } from "@/types/week-analysis.type"
 import { Address } from "viem"
 import { FaXTwitter } from "react-icons/fa6"
+import FearGreedBadge from "./fear-and-greed-badge"
 
 export default function WeeklyAnalysisCard({
   record,
@@ -65,10 +66,9 @@ export default function WeeklyAnalysisCard({
             </CardDescription>
           </div>
           {record.fear_and_greed_index && (
-            <Badge variant="secondary" className="gap-1">
-              <span className="font-medium">Fear & Greed:</span>
-              <span>{record.fear_and_greed_index}</span>
-            </Badge>
+            <FearGreedBadge
+              fearAndGreedIndex={Number(record.fear_and_greed_index)}
+            />
           )}
         </div>
       </CardHeader>

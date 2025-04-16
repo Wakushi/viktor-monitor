@@ -10,8 +10,8 @@ export default function Header() {
 
   const links = [
     {
-      href: "/analysis",
-      label: "Analysis",
+      href: "/confidence",
+      label: "Confidence",
       icon: EclipseIcon,
     },
   ]
