@@ -8,7 +8,6 @@ import {
   CardDescription,
 } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ArrowUp, ArrowDown, Globe, Copy, Blocks } from "lucide-react"
 import {
@@ -48,7 +47,7 @@ export default function WeeklyAnalysisCard({
   }
 
   return (
-    <Card className="border shadow-sm max-h-[700px] overflow-scroll">
+    <Card className="border shadow-sm">
       <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <div>
@@ -75,7 +74,7 @@ export default function WeeklyAnalysisCard({
 
       <Separator />
 
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="p-6 space-y-6 max-h-[700px] overflow-scroll">
         {record.analysis.results.map((res, i) => (
           <Card key={res.token.key + i} className="p-4">
             <div className="space-y-4">

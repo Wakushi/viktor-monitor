@@ -3,12 +3,17 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { Bot, EclipseIcon } from "lucide-react"
+import { Bot, ChartBarIncreasing, EclipseIcon } from "lucide-react"
 
 export default function Header() {
   const pathname = usePathname()
 
   const links = [
+    {
+      href: "/",
+      label: "Analysis",
+      icon: ChartBarIncreasing,
+    },
     {
       href: "/confidence",
       label: "Confidence",
@@ -26,19 +31,24 @@ export default function Header() {
           </Link>
         </div>
         <nav className="flex items-center space-x-6 text-sm font-medium">
-          {links.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center space-x-2 transition-colors hover:text-foreground/80",
-                pathname === href ? "text-foreground" : "text-foreground/60"
-              )}
-            >
-              <Icon className="h-4 w-4" />
-              <span>{label}</span>
-            </Link>
-          ))}
+          {links.map(({ href, label, icon: Icon }) => {
+            const isActive = pathname === href
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "flex items-center space-x-2 px-2 py-1 rounded-md transition-colors hover:text-foreground hover:bg-muted",
+                  isActive
+                    ? "text-foreground bg-muted font-semibold"
+                    : "text-foreground/60"
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                <span>{label}</span>
+              </Link>
+            )
+          })}
         </nav>
       </div>
     </header>

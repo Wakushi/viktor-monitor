@@ -1,14 +1,14 @@
 import _ from "lodash"
-import { Analyse, FormattedResult } from "@/types/analysis.type"
 import { AverageMetrics, ScatterDataPoint } from "./confidence-metrics.types"
+import { FormattedResult, WeekAnalysisRecord } from "@/types/week-analysis.type"
 
 export function processAnalysisData(
-  analyses: Analyse[],
+  analyses: WeekAnalysisRecord[],
   confidenceFilter: number = 0
 ) {
   const processedScatterData: ScatterDataPoint[] = []
 
-  const filteredAnalysis = analyses.map((analyse: Analyse) => {
+  const filteredAnalysis = analyses.map((analyse: WeekAnalysisRecord) => {
     const filteredResults = analyse.analysis.formattedResults
       .map((result: FormattedResult) => {
         return Number(result.buyingConfidence.slice(0, 5)) > confidenceFilter
