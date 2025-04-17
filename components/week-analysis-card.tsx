@@ -52,7 +52,7 @@ export default function WeeklyAnalysisCard({
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <div>
             <CardTitle>
-              Weekly Analysis ({record.analysis.formattedResults.length}{" "}
+              Analysis record ({record.analysis.formattedResults.length}{" "}
               results)
             </CardTitle>
             <CardDescription className="mt-1">

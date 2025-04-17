@@ -13,7 +13,7 @@ export default function WeeklyPage() {
 
   return (
     <div className="py-6 px-20 space-y-4">
-      <h1 className="text-2xl font-bold">Weekly Market Analyses</h1>
+      <h1 className="text-2xl font-bold">Analyses</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {weekAnalysesRecords.map((record) => (
