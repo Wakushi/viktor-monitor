@@ -29,7 +29,7 @@ export default function WeeklyAnalysisCard({
   }
 
   function getBlockExplorerUrl(chain: MobulaChain, address: Address | string) {
-    const explorerUrls = {
+    const explorerUrls: Record<string, string> = {
       [MobulaChain.ETHEREUM]: "https://etherscan.io/address/",
       [MobulaChain.BASE]: "https://basescan.org/address/",
       [MobulaChain.SOLANA]: "https://solscan.io/account/",

@@ -16,14 +16,7 @@ import { Shield, Settings, PlayCircle, Loader2 } from "lucide-react"
 import { useWeekAnalysis } from "@/stores/week-analysis.store"
 import WeeklyAnalysisCard from "@/components/week-analysis-card"
 import LogViewer from "@/components/log-viewer"
-
-export enum MobulaChain {
-  ETHEREUM = "Ethereum",
-  BASE = "Base",
-  SOLANA = "Solana",
-  ARBITRUM = "Arbitrum",
-  BNB = "BNB Smart Chain (BEP20)",
-}
+import { MobulaChain } from "@/types/week-analysis.type"
 
 export default function AdminPage() {
   const [isTestMode, setIsTestMode] = useState(false)
