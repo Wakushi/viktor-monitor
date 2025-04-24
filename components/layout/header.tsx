@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { Bot, ChartBarIncreasing, EclipseIcon } from "lucide-react"
+import { Bot, ChartBarIncreasing, EclipseIcon, Shield } from "lucide-react"
 
 export default function Header() {
   const pathname = usePathname()
@@ -18,6 +18,11 @@ export default function Header() {
       href: "/confidence",
       label: "Confidence",
       icon: EclipseIcon,
+    },
+    {
+      href: "/login",
+      label: "Login",
+      icon: Shield,
     },
   ]
 

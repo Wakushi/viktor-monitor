@@ -6,6 +6,7 @@ export type WeekAnalysisRecord = {
   analysis: WeekAnalysis
   performance?: TokenPerformance[]
   fear_and_greed_index?: string
+  test?: boolean
 }
 
 export type WeekAnalysis = {

@@ -17,12 +17,14 @@ interface WeekAnalysisContextProps {
   weekAnalysesRecords: WeekAnalysisRecord[]
   isLoading: boolean
   error: Error | null
+  fetchAnalyses: () => Promise<void>
 }
 
 const WeekAnalysisContext = createContext<WeekAnalysisContextProps>({
   weekAnalysesRecords: [],
   isLoading: false,
   error: null,
+  fetchAnalyses: async () => {},
 })
 
 export default function WeekAnalysisContextProvider(
@@ -38,7 +40,7 @@ export default function WeekAnalysisContextProvider(
     fetchAnalyses()
   }, [])
 
-  const fetchAnalyses = async () => {
+  async function fetchAnalyses(): Promise<void> {
     try {
       setIsLoading(true)
       setError(null)
@@ -60,6 +62,7 @@ export default function WeekAnalysisContextProvider(
     weekAnalysesRecords,
     isLoading,
     error,
+    fetchAnalyses,
   }
 
   return (
