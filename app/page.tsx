@@ -16,9 +16,11 @@ export default function WeeklyPage() {
       <h1 className="text-xl sm:text-2xl font-bold">Analyses</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        {weekAnalysesRecords.map((record) => (
-          <WeeklyAnalysisCard key={record.id} record={record} />
-        ))}
+        {weekAnalysesRecords
+          .filter((analyse) => !analyse.test)
+          .map((record) => (
+            <WeeklyAnalysisCard key={record.id} record={record} />
+          ))}
       </div>
     </div>
   )
