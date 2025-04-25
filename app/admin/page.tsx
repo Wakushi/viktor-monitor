@@ -107,19 +107,16 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="container flex flex-col gap-4 mx-auto py-6">
-      <div className="flex items-center gap-4 h-[300px]">
+    <div className="container flex flex-col gap-4 mx-auto py-6 px-4">
+      <div className="flex flex-col lg:flex-row gap-4">
         <Card className="border shadow-md w-full">
           <CardHeader className="pb-2">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-2">
               <Shield className="h-5 w-5 text-primary" />
               <CardTitle>Admin Panel</CardTitle>
             </div>
-            <CardDescription>
-              Manage analysis settings and trigger new analyses
-            </CardDescription>
           </CardHeader>
-          <CardContent className="flex items-center gap-4">
+          <CardContent className="flex flex-col lg:flex-row items-stretch gap-4">
             {/* Analysis Trigger Section */}
             <div className="flex-1 flex flex-col self-stretch rounded-md border p-4">
               <div className="flex items-center gap-2 mb-3">
@@ -134,21 +131,23 @@ export default function AdminPage() {
                 />
                 <Label htmlFor="test-mode">Test Mode</Label>
               </div>
-              <Button
-                onClick={handleTriggerAnalysis}
-                disabled={isLoading}
-                className="w-full sm:w-auto mt-auto"
-              >
-                {isLoading ? "Processing..." : "Trigger Analysis"}
-              </Button>
-              <Button
-                onClick={fetchAnalyses}
-                disabled={isLoading}
-                variant="outline"
-                className="w-full sm:w-auto mt-auto"
-              >
-                {isLoading ? "Processing..." : "Refresh Analysis"}
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-2 mt-auto">
+                <Button
+                  onClick={handleTriggerAnalysis}
+                  disabled={isLoading}
+                  className="w-full sm:w-auto"
+                >
+                  {isLoading ? "Processing..." : "Trigger Analysis"}
+                </Button>
+                <Button
+                  onClick={fetchAnalyses}
+                  disabled={isLoading}
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                >
+                  {isLoading ? "Processing..." : "Refresh Analysis"}
+                </Button>
+              </div>
             </div>
 
             {/* Chain Selection Section */}
@@ -157,7 +156,7 @@ export default function AdminPage() {
                 <Settings className="h-4 w-4 text-primary" />
                 <h3 className="text-base font-medium">Select Chains</h3>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 max-h-[200px] overflow-y-auto">
                 {Object.values(MobulaChain).map((chain) => (
                   <div key={chain} className="flex items-center space-x-2">
                     <Checkbox
@@ -173,22 +172,24 @@ export default function AdminPage() {
                 onClick={handleUpdateWhitelistedChains}
                 disabled={isLoading}
                 variant="outline"
-                className="w-full sm:w-auto"
+                className="w-full"
               >
                 {isLoading ? "Saving..." : "Save Chain Settings"}
               </Button>
             </div>
           </CardContent>
         </Card>
-        <LogViewer />
+        <div className="w-full lg:w-[400px]">
+          <LogViewer />
+        </div>
       </div>
 
       {isLoadingAnalysis ? (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center min-h-[200px]">
           <Loader2 className="h-10 w-10 animate-spin" />
         </div>
       ) : weekAnalysesRecords.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {weekAnalysesRecords
             .filter((analyse) => analyse.test)
             .map((record) => (
@@ -196,7 +197,7 @@ export default function AdminPage() {
             ))}
         </div>
       ) : (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center min-h-[200px]">
           <p className="text-gray-500">No analyses found</p>
         </div>
       )}
