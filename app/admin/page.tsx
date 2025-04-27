@@ -1,13 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
@@ -109,7 +103,7 @@ export default function AdminPage() {
   return (
     <div className="container flex flex-col gap-4 mx-auto py-6 px-4">
       <div className="flex flex-col lg:flex-row gap-4">
-        <Card className="border shadow-md w-full">
+        <Card className="flex-1 border shadow-md w-full">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2 mb-2">
               <Shield className="h-5 w-5 text-primary" />
@@ -179,7 +173,7 @@ export default function AdminPage() {
             </div>
           </CardContent>
         </Card>
-        <div className="w-full lg:w-[400px]">
+        <div className="flex-1 w-full">
           <LogViewer />
         </div>
       </div>
