@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { BalanceChart } from "@/components/balance-chart"
 import { SwapHistory } from "@/components/swap-history"
 
