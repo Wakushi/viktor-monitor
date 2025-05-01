@@ -3,7 +3,13 @@
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { Bot, ChartBarIncreasing, EclipseIcon, Shield } from "lucide-react"
+import {
+  Bot,
+  ChartBarIncreasing,
+  EclipseIcon,
+  Shield,
+  Wallet,
+} from "lucide-react"
 
 export default function Header() {
   const pathname = usePathname()
@@ -13,6 +19,11 @@ export default function Header() {
       href: "/",
       label: "Analysis",
       icon: ChartBarIncreasing,
+    },
+    {
+      href: "/wallet",
+      label: "Wallet",
+      icon: Wallet,
     },
     {
       href: "/confidence",
