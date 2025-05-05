@@ -11,13 +11,12 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { ArrowUp, ArrowDown, Globe, Copy, Blocks } from "lucide-react"
 import {
-  MobulaChain,
   TokenPerformance,
   WeekAnalysisRecord,
 } from "@/types/week-analysis.type"
-import { Address } from "viem"
 import { FaXTwitter } from "react-icons/fa6"
 import FearGreedBadge from "./fear-and-greed-badge"
+import { getBlockExplorerUrl } from "@/lib/helpers"
 
 export default function WeeklyAnalysisCard({
   record,
@@ -26,16 +25,6 @@ export default function WeeklyAnalysisCard({
 }) {
   function copyToClipboard(text: string): void {
     navigator.clipboard.writeText(text)
-  }
-
-  function getBlockExplorerUrl(chain: MobulaChain, address: Address | string) {
-    const explorerUrls: Record<string, string> = {
-      [MobulaChain.ETHEREUM]: "https://etherscan.io/address/",
-      [MobulaChain.BASE]: "https://basescan.org/address/",
-      [MobulaChain.SOLANA]: "https://solscan.io/account/",
-    }
-
-    return explorerUrls[chain] + address
   }
 
   function getPerformance(tokenName: string): TokenPerformance | null {

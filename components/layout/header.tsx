@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import {
   Bot,
   ChartBarIncreasing,
+  CoinsIcon,
   EclipseIcon,
   Shield,
   Wallet,
@@ -19,6 +20,11 @@ export default function Header() {
       href: "/",
       label: "Analysis",
       icon: ChartBarIncreasing,
+    },
+    {
+      href: "/tokens",
+      label: "Tokens",
+      icon: CoinsIcon,
     },
     {
       href: "/wallet",

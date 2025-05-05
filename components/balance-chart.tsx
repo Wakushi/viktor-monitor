@@ -7,8 +7,10 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Brush,
 } from "recharts"
 import { format } from "date-fns"
+import { useMemo } from "react"
 
 type BalanceChartProps = {
   balanceUsd: number
@@ -22,11 +24,15 @@ export function BalanceChart({
   balanceUsd,
   balanceHistory,
 }: BalanceChartProps) {
-  const chartData = balanceHistory.map(([timestamp, value]) => ({
-    time: formatTimestamp(timestamp),
-    rawTime: timestamp,
-    value,
-  }))
+  const chartData = useMemo(
+    () =>
+      balanceHistory.map(([timestamp, value]) => ({
+        time: formatTimestamp(timestamp),
+        rawTime: timestamp,
+        value,
+      })),
+    [balanceHistory]
+  )
 
   const minGap = 3 * 60 * 60 * 1000
   const xTicks: number[] = []
@@ -52,7 +58,11 @@ export function BalanceChart({
             tick={{ fontSize: 12 }}
             minTickGap={30}
           />
-          <YAxis tickFormatter={(v) => `$${v.toFixed(0)}`} width={80} />
+          <YAxis
+            tickFormatter={(v) => `$${v.toFixed(0)}`}
+            width={80}
+            domain={["auto", "auto"]}
+          />
           <Tooltip
             content={({ active, payload, label }) => {
               if (!active || !payload || !payload.length) return null
@@ -72,6 +82,13 @@ export function BalanceChart({
             stroke="#4f46e5"
             strokeWidth={2}
             dot={false}
+          />
+          <Brush
+            dataKey="rawTime"
+            height={30}
+            stroke="#4f46e5"
+            travellerWidth={10}
+            tickFormatter={(ts) => format(new Date(ts), "MM-dd HH:mm")}
           />
         </LineChart>
       </ResponsiveContainer>

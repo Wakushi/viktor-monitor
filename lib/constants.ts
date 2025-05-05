@@ -1,0 +1,43 @@
+import { MobulaChain, MobulaExtendedToken } from "@/types/week-analysis.type"
+
+export const USDC_BASE: MobulaExtendedToken = {
+  id: 100012309,
+  key: "100012309",
+  token_id: 100012309,
+  timestamp: undefined,
+  name: "USDC",
+  symbol: "USDC",
+  decimals: 6,
+  logo: "https://coin-images.coingecko.com/coins/images/6319/large/usdc.png?1696506694",
+  rank: 0,
+  price: 0,
+  market_cap: 0,
+  market_cap_diluted: 0,
+  volume: 0,
+  volume_change_24h: 0,
+  volume_7d: 0,
+  liquidity: 0,
+  ath: 0,
+  atl: 0,
+  off_chain_volume: 0,
+  is_listed: false,
+  price_change_1h: 0,
+  price_change_24h: 0,
+  price_change_7d: 0,
+  price_change_1m: 0,
+  price_change_1y: 0,
+  total_supply: 0,
+  circulating_supply: 0,
+  contracts: [
+    {
+      address: "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+      blockchainId: "",
+      blockchain: MobulaChain.BASE,
+      decimals: 6,
+    },
+  ],
+  extra: {
+    website: undefined,
+    twitter: undefined,
+  },
+}

@@ -1,6 +1,9 @@
 "use client"
 
-import { WeekAnalysisRecord } from "@/types/week-analysis.type"
+import {
+  MobulaExtendedToken,
+  WeekAnalysisRecord,
+} from "@/types/week-analysis.type"
 import {
   createContext,
   ReactNode,
@@ -18,6 +21,7 @@ interface WeekAnalysisContextProps {
   isLoading: boolean
   error: Error | null
   fetchAnalyses: () => Promise<void>
+  getTokenSet: () => MobulaExtendedToken[]
 }
 
 const WeekAnalysisContext = createContext<WeekAnalysisContextProps>({
@@ -25,6 +29,7 @@ const WeekAnalysisContext = createContext<WeekAnalysisContextProps>({
   isLoading: false,
   error: null,
   fetchAnalyses: async () => {},
+  getTokenSet: () => [],
 })
 
 export default function WeekAnalysisContextProvider(
@@ -58,11 +63,32 @@ export default function WeekAnalysisContextProvider(
     }
   }
 
+  function getTokenSet(): MobulaExtendedToken[] {
+    if (!weekAnalysesRecords.length) return []
+
+    const tokenById: Map<number, MobulaExtendedToken> = new Map()
+
+    weekAnalysesRecords.forEach((record) => {
+      record.analysis.results.forEach(({ token }) => {
+        const tokenId = Number(token.token_id)
+
+        if (!tokenById.has(tokenId)) {
+          tokenById.set(tokenId, token)
+        }
+      })
+    })
+
+    return Array.from(tokenById.values()).sort(
+      (a, b) => b.market_cap - a.market_cap
+    )
+  }
+
   const context: WeekAnalysisContextProps = {
     weekAnalysesRecords,
     isLoading,
     error,
     fetchAnalyses,
+    getTokenSet,
   }
 
   return (
