@@ -100,6 +100,14 @@ export default function WeeklyAnalysisCard({
                       ${Math.round(res.token.market_cap).toLocaleString()}
                     </p>
                   </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Expected change %
+                    </p>
+                    <p className="text-lg font-semibold">
+                      {res.expectedNextDayChange.toFixed(2)}%
+                    </p>
+                  </div>
                 </div>
 
                 <div className="space-y-4">
