@@ -10,20 +10,18 @@ import {
 } from "@/components/ui/table"
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar"
 import clsx from "clsx"
-import { MobulaAssetEntry, useWallet } from "@/stores/wallet.store"
+import { Balance, useWallet } from "@/stores/wallet.store"
 import { Button } from "./ui/button"
 import { RefreshCcw } from "lucide-react"
 
 interface WalletPortfolioProps {
-  totalBalance: number
-  assets: MobulaAssetEntry[]
+  assets: Balance[]
 }
 
-export function WalletPortfolio({
-  totalBalance,
-  assets,
-}: WalletPortfolioProps) {
+export function WalletPortfolio({ assets }: WalletPortfolioProps) {
   const { refreshPortfolio } = useWallet()
+
+  const totalBalance = assets.reduce((prev, curr) => prev + curr.value, 0)
 
   return (
     <div className="w-full h-full p-4 rounded-xl bg-white dark:bg-zinc-900 shadow-md space-y-4">
@@ -54,11 +52,11 @@ export function WalletPortfolio({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {assets.map((token) => {
-              const muted = token.estimated_balance === 0
+            {assets.map(({ token, balance, allocation, price, value }) => {
+              const muted = balance === 0
               return (
                 <TableRow
-                  key={token.asset.id}
+                  key={token.token_id}
                   className={clsx({
                     "opacity-40": muted,
                   })}
@@ -66,21 +64,18 @@ export function WalletPortfolio({
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar className="h-6 w-6 shrink-0">
-                        <AvatarImage
-                          src={token.asset.logo}
-                          alt={token.asset.symbol}
-                        />
+                        <AvatarImage src={token.logo} alt={token.symbol} />
                       </Avatar>
                       <div>
-                        <div className="font-medium">{token.asset.name}</div>
+                        <div className="font-medium">{token.name}</div>
                         <div className="text-muted-foreground text-xs">
-                          {token.asset.symbol}
+                          {token.symbol}
                         </div>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    {token.token_balance.toLocaleString(undefined, {
+                    {balance.toLocaleString(undefined, {
                       maximumFractionDigits: 6,
                     })}
                   </TableCell>
@@ -88,10 +83,10 @@ export function WalletPortfolio({
                     ${token.price.toFixed(8)}
                   </TableCell>
                   <TableCell className="text-right">
-                    ${token.estimated_balance.toFixed(2)}
+                    ${balance.toFixed(2)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {token.allocation.toFixed(2)}%
+                    {allocation.toFixed(2)}%
                   </TableCell>
                 </TableRow>
               )

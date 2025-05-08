@@ -1,5 +1,6 @@
 "use client"
 
+import { MobulaExtendedToken } from "@/types/week-analysis.type"
 import {
   createContext,
   ReactNode,
@@ -21,13 +22,21 @@ export interface MobulaPortfolioResponse {
   }
 }
 
+export type Balance = {
+  balance: number
+  price: number
+  value: number
+  allocation: number
+  token: MobulaExtendedToken
+}
+
 export interface MobulaAssetEntry {
   asset: {
     id: number
     name: string
     symbol: string
     logo: string
-    decimals: string[] 
+    decimals: string[]
     contracts: string[]
     blockchains: string[]
   }
@@ -39,8 +48,7 @@ export interface MobulaAssetEntry {
 }
 
 interface WalletContextProps {
-  portfolioAssets: MobulaAssetEntry[]
-  totalBalance: number
+  portfolioAssets: Balance[]
   balanceData: any
   swapHistory: any
   loadingPortfolio: boolean
@@ -53,7 +61,6 @@ interface WalletContextProps {
 
 const WalletContext = createContext<WalletContextProps>({
   portfolioAssets: [],
-  totalBalance: 0,
   balanceData: null,
   swapHistory: null,
   loadingPortfolio: true,
@@ -67,8 +74,7 @@ const WalletContext = createContext<WalletContextProps>({
 export function WalletContextProvider({
   children,
 }: WalletContextProviderProps) {
-  const [portfolioAssets, setPortfolioAssets] = useState<MobulaAssetEntry[]>([])
-  const [totalBalance, setTotalBalance] = useState(0)
+  const [portfolioAssets, setPortfolioAssets] = useState<Balance[]>([])
   const [balanceData, setBalanceData] = useState<any>(null)
   const [swapHistory, setSwapHistory] = useState<any>(null)
   const [loadingPortfolio, setLoadingPortfolio] = useState(true)
@@ -76,7 +82,6 @@ export function WalletContextProvider({
   const [loadingSwaps, setLoadingSwaps] = useState(true)
 
   const WALLET_ADDRESS = "0x82e931E5958234331c21D155331eE6C3048a3935"
-  const PORTFOLIO_API = `https://api.mobula.io/api/1/wallet/portfolio?wallet=${WALLET_ADDRESS}`
 
   useEffect(() => {
     refreshPortfolio()
@@ -87,15 +92,10 @@ export function WalletContextProvider({
   async function refreshPortfolio() {
     try {
       setLoadingPortfolio(true)
-      const res = await fetch(PORTFOLIO_API)
-      const data: MobulaPortfolioResponse = await res.json()
+      const res = await fetch("api/wallet")
+      const data: Balance[] = await res.json()
 
-      setPortfolioAssets(
-        data.data.assets
-          .filter((asset) => asset.token_balance)
-          .sort((a, b) => b.allocation - a.allocation)
-      )
-      setTotalBalance(data.data.total_wallet_balance)
+      setPortfolioAssets(data)
     } catch (err) {
       console.error("Failed to load wallet portfolio:", err)
     } finally {
@@ -135,7 +135,6 @@ export function WalletContextProvider({
 
   const context: WalletContextProps = {
     portfolioAssets,
-    totalBalance,
     balanceData,
     swapHistory,
     loadingPortfolio,

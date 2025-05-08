@@ -10,7 +10,6 @@ export default function WalletPage() {
     swapHistory,
     balanceData,
     portfolioAssets,
-    totalBalance,
     loadingSwaps,
     loadingBalance,
     loadingPortfolio,
@@ -24,11 +23,8 @@ export default function WalletPage() {
         <div className="flex-1 min-h-[300px] flex items-center justify-center">
           {loadingPortfolio ? (
             <Loader />
-          ) : portfolioAssets.length ? (
-            <WalletPortfolio
-              assets={portfolioAssets}
-              totalBalance={totalBalance}
-            />
+          ) : portfolioAssets?.length ? (
+            <WalletPortfolio assets={portfolioAssets} />
           ) : (
             <div>No portfolio assets found</div>
           )}
