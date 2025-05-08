@@ -4,9 +4,9 @@ import { TokenSearchTable } from "@/components/token-list"
 import { useWeekAnalysis } from "@/stores/week-analysis.store"
 
 export default function TokenPage() {
-  const { isLoading, getTokenSet } = useWeekAnalysis()
+  const { getTokenSet, isLoadingAll } = useWeekAnalysis()
 
-  if (isLoading) {
+  if (isLoadingAll) {
     return <HistoricalAnalysisSkeleton />
   }
 

@@ -1,10 +1,14 @@
 import { WeekAnalysisRecord } from "@/types/week-analysis.type"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  const { searchParams } = new URL(req.url)
+  const page = searchParams.get("page")
+  const limit = searchParams.get("limit")
+
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/analysis`,
+      `${process.env.NEXT_PUBLIC_API_URL}/analysis?page=${page}&limit=${limit}`,
       {
         headers: {
           Authorization: `Bearer ${process.env.API_SECRET}`,

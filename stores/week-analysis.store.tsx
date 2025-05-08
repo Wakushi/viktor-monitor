@@ -19,17 +19,25 @@ interface WeekAnalysisContextProviderProps {
 interface WeekAnalysisContextProps {
   weekAnalysesRecords: WeekAnalysisRecord[]
   isLoading: boolean
+  isLoadingAll: boolean
   error: Error | null
   fetchAnalyses: () => Promise<void>
   getTokenSet: () => MobulaExtendedToken[]
+  loadMore: () => void
+  page: number
+  fetchedAll: boolean
 }
 
 const WeekAnalysisContext = createContext<WeekAnalysisContextProps>({
   weekAnalysesRecords: [],
   isLoading: false,
+  isLoadingAll: false,
   error: null,
   fetchAnalyses: async () => {},
   getTokenSet: () => [],
+  loadMore: () => {},
+  page: 1,
+  fetchedAll: false,
 })
 
 export default function WeekAnalysisContextProvider(
@@ -40,20 +48,29 @@ export default function WeekAnalysisContextProvider(
   >([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
+  const [page, setPage] = useState<number>(1)
+  const [isLoadingAll, setIsLoadingAll] = useState(false)
+  const [fetchedAll, setFetchedAll] = useState<boolean>(false)
+
+  useEffect(() => {
+    fetchAllAnalyses()
+  }, [])
 
   useEffect(() => {
     fetchAnalyses()
-  }, [])
+  }, [page])
 
   async function fetchAnalyses(): Promise<void> {
     try {
       setIsLoading(true)
       setError(null)
 
-      const response = await fetch(`/api/analysis`)
+      const response = await fetch(`/api/analysis?page=${page}&limit=10`)
       const { data } = await response.json()
 
-      setWeekAnalysesRecords(data)
+      if (fetchedAll) return
+
+      setWeekAnalysesRecords((prevData) => [...prevData, ...data])
     } catch (err) {
       setError(
         err instanceof Error ? err : new Error("Failed to fetch analyses")
@@ -61,6 +78,28 @@ export default function WeekAnalysisContextProvider(
     } finally {
       setIsLoading(false)
     }
+  }
+
+  async function fetchAllAnalyses(): Promise<void> {
+    setIsLoadingAll(true)
+
+    try {
+      const response = await fetch(`/api/analysis?page=1&limit=${999}`)
+      const { data } = await response.json()
+
+      setFetchedAll(true)
+      setWeekAnalysesRecords(data)
+    } catch (err) {
+      setError(
+        err instanceof Error ? err : new Error("Failed to fetch analyses")
+      )
+    } finally {
+      setIsLoadingAll(false)
+    }
+  }
+
+  function loadMore(): void {
+    setPage((prevPage) => prevPage + 1)
   }
 
   function getTokenSet(): MobulaExtendedToken[] {
@@ -89,6 +128,10 @@ export default function WeekAnalysisContextProvider(
     error,
     fetchAnalyses,
     getTokenSet,
+    loadMore,
+    page,
+    fetchedAll,
+    isLoadingAll,
   }
 
   return (
