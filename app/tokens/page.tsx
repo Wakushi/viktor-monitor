@@ -13,7 +13,7 @@ export default function TokenPage() {
   const tokens = getTokenSet()
 
   return (
-    <div className="py-6 px-20">
+    <div className="py-6 md:px-20">
       <TokenSearchTable tokens={tokens} />
     </div>
   )

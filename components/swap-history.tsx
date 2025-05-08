@@ -2,7 +2,7 @@
 
 import { useWeekAnalysis } from "@/stores/week-analysis.store"
 import { format } from "date-fns"
-import { ArrowRight, ExternalLink, Loader2 } from "lucide-react"
+import { ArrowRight, ExternalLink, RefreshCcw } from "lucide-react"
 
 import { MobulaChain, MobulaExtendedToken } from "@/types/week-analysis.type"
 import { getBlockExplorerTxUrl } from "@/lib/helpers"
@@ -10,6 +10,9 @@ import { Avatar, AvatarImage } from "./ui/avatar"
 import { USDC_BASE } from "@/lib/constants"
 import { useState } from "react"
 import { Input } from "./ui/input"
+import Loader from "./ui/loader"
+import { useWallet } from "@/stores/wallet.store"
+import { Button } from "./ui/button"
 
 type SwapTx = {
   id: number
@@ -36,16 +39,9 @@ function formatTokenAmount(amount: string, decimals: number) {
 }
 
 export function SwapHistory({ swaps }: Props) {
-  const { isLoading, getTokenSet } = useWeekAnalysis()
+  const { getTokenSet, isLoading } = useWeekAnalysis()
+  const { refreshSwaps } = useWallet()
   const [search, setSearch] = useState<string>("")
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-48">
-        <Loader2 className="animate-spin h-6 w-6 text-muted-foreground" />
-      </div>
-    )
-  }
 
   const tokens: MobulaExtendedToken[] = getTokenSet()
   tokens.push(USDC_BASE)
@@ -71,11 +67,19 @@ export function SwapHistory({ swaps }: Props) {
   })
 
   return (
-    <div className="rounded-xl shadow-md bg-white dark:bg-zinc-900 p-4">
+    <div className="rounded-xl shadow-md bg-white dark:bg-zinc-900 p-4 w-full">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
-        <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
-          Swap History
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-100">
+            Swap History
+          </h2>
+          <Button
+            className="hover:bg-transparent bg-zinc-800"
+            onClick={refreshSwaps}
+          >
+            <RefreshCcw className="text-white" />
+          </Button>
+        </div>
         <Input
           type="text"
           placeholder="Search token..."
@@ -99,21 +103,25 @@ export function SwapHistory({ swaps }: Props) {
               {/* Token swap row */}
               <div className="flex flex-col md:grid md:grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-6">
                 {/* Token In */}
-                <div className="flex items-center gap-3">
-                  {tokenIn?.logo && (
-                    <Avatar className="h-10 w-10 md:h-12 md:w-12">
-                      <AvatarImage src={tokenIn.logo} alt={tokenIn.symbol} />
-                    </Avatar>
-                  )}
-                  <div className="flex flex-col">
-                    <span className="text-base md:text-xl font-bold text-zinc-900 dark:text-white">
-                      {formatTokenAmount(swap.amount_in, decimalsIn)}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {tokenIn?.symbol ?? "Unknown"}
-                    </span>
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  <div className="flex items-center gap-3">
+                    {tokenIn?.logo && (
+                      <Avatar className="h-10 w-10 md:h-12 md:w-12">
+                        <AvatarImage src={tokenIn.logo} alt={tokenIn.symbol} />
+                      </Avatar>
+                    )}
+                    <div className="flex flex-col">
+                      <span className="text-base md:text-xl font-bold text-zinc-900 dark:text-white">
+                        {formatTokenAmount(swap.amount_in, decimalsIn)}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {tokenIn?.symbol ?? "Unknown"}
+                      </span>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Arrow */}
                 <div className="flex justify-center text-zinc-400 dark:text-zinc-500">
@@ -121,21 +129,28 @@ export function SwapHistory({ swaps }: Props) {
                 </div>
 
                 {/* Token Out */}
-                <div className="flex items-center gap-3 justify-end">
-                  <div className="flex flex-col text-right">
-                    <span className="text-base md:text-xl font-bold text-zinc-900 dark:text-white">
-                      {formatTokenAmount(swap.amount_out, decimalsOut)}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {tokenOut?.symbol ?? "Unknown"}
-                    </span>
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  <div className="flex items-center gap-3 justify-end">
+                    <div className="flex flex-col text-right">
+                      <span className="text-base md:text-xl font-bold text-zinc-900 dark:text-white">
+                        {formatTokenAmount(swap.amount_out, decimalsOut)}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {tokenOut?.symbol ?? "Unknown"}
+                      </span>
+                    </div>
+                    {tokenOut?.logo && (
+                      <Avatar className="h-10 w-10 md:h-12 md:w-12">
+                        <AvatarImage
+                          src={tokenOut.logo}
+                          alt={tokenOut.symbol}
+                        />
+                      </Avatar>
+                    )}
                   </div>
-                  {tokenOut?.logo && (
-                    <Avatar className="h-10 w-10 md:h-12 md:w-12">
-                      <AvatarImage src={tokenOut.logo} alt={tokenOut.symbol} />
-                    </Avatar>
-                  )}
-                </div>
+                )}
               </div>
 
               {/* Footer row */}

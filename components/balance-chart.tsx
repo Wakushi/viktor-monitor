@@ -11,6 +11,9 @@ import {
 } from "recharts"
 import { format } from "date-fns"
 import { useMemo } from "react"
+import { Button } from "./ui/button"
+import { RefreshCcw } from "lucide-react"
+import { useWallet } from "@/stores/wallet.store"
 
 type BalanceChartProps = {
   balanceUsd: number
@@ -24,6 +27,8 @@ export function BalanceChart({
   balanceUsd,
   balanceHistory,
 }: BalanceChartProps) {
+  const { refreshBalance } = useWallet()
+
   const chartData = useMemo(
     () =>
       balanceHistory.map(([timestamp, value]) => ({
@@ -46,8 +51,16 @@ export function BalanceChart({
 
   return (
     <div className="w-full p-4 rounded-xl bg-white dark:bg-zinc-900 shadow-md">
-      <div className="mb-2 text-lg font-semibold text-zinc-700 dark:text-zinc-100">
-        Current Balance: ${balanceUsd.toFixed(2)}
+      <div className="flex items-center gap-2">
+        <div className="mb-2 text-lg font-semibold text-zinc-700 dark:text-zinc-100">
+          Current Balance: ${balanceUsd.toFixed(2)}
+        </div>
+        <Button
+          className="hover:bg-transparent bg-zinc-800"
+          onClick={refreshBalance}
+        >
+          <RefreshCcw className="text-white" />
+        </Button>
       </div>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData}>

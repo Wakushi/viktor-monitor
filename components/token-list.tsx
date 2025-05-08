@@ -162,7 +162,7 @@ export function TokenSearchTable({ tokens }: TokenSearchTableProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between w-full">
+      <div className="flex flex-col gap-2 md:flex-row items-center justify-between w-full">
         <div className="flex items-center gap-2">
           <FaMagnifyingGlass />
           <Input
@@ -172,7 +172,7 @@ export function TokenSearchTable({ tokens }: TokenSearchTableProps) {
             className="max-w-md min-w-[300px]"
           />
         </div>
-        <span className="opacity-60">
+        <span className="opacity-60 text-sm">
           {table.getRowModel().rows.length} tokens found
         </span>
       </div>
