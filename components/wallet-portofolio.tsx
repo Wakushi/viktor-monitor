@@ -80,10 +80,10 @@ export function WalletPortfolio({ assets }: WalletPortfolioProps) {
                     })}
                   </TableCell>
                   <TableCell className="text-right">
-                    ${token.price.toFixed(8)}
+                    ${price.toFixed(8)}
                   </TableCell>
                   <TableCell className="text-right">
-                    ${balance.toFixed(2)}
+                    ${value.toFixed(2)}
                   </TableCell>
                   <TableCell className="text-right">
                     {allocation.toFixed(2)}%
