@@ -30,6 +30,15 @@ export type Balance = {
   token: MobulaExtendedToken
 }
 
+export type WalletSnapshotState = "before_sell" | "after_sell"
+
+export type WalletSnapshot = {
+  id: number
+  state: WalletSnapshotState
+  balances: Balance[]
+  created_at: Date | string
+}
+
 export interface MobulaAssetEntry {
   asset: {
     id: number
@@ -49,25 +58,25 @@ export interface MobulaAssetEntry {
 
 interface WalletContextProps {
   portfolioAssets: Balance[]
-  balanceData: any
+  snapshots: any
   swapHistory: any
   loadingPortfolio: boolean
-  loadingBalance: boolean
+  loadingSnapshots: boolean
   loadingSwaps: boolean
   refreshPortfolio: () => Promise<void>
-  refreshBalance: () => Promise<void>
+  refreshSnapshots: () => Promise<void>
   refreshSwaps: () => Promise<void>
 }
 
 const WalletContext = createContext<WalletContextProps>({
   portfolioAssets: [],
-  balanceData: null,
+  snapshots: null,
   swapHistory: null,
   loadingPortfolio: true,
-  loadingBalance: true,
+  loadingSnapshots: true,
   loadingSwaps: true,
   refreshPortfolio: async () => {},
-  refreshBalance: async () => {},
+  refreshSnapshots: async () => {},
   refreshSwaps: async () => {},
 })
 
@@ -75,17 +84,17 @@ export function WalletContextProvider({
   children,
 }: WalletContextProviderProps) {
   const [portfolioAssets, setPortfolioAssets] = useState<Balance[]>([])
-  const [balanceData, setBalanceData] = useState<any>(null)
+  const [snapshots, setSnapshots] = useState<WalletSnapshot[]>([])
   const [swapHistory, setSwapHistory] = useState<any>(null)
   const [loadingPortfolio, setLoadingPortfolio] = useState(true)
-  const [loadingBalance, setLoadingBalance] = useState(true)
+  const [loadingSnapshots, setLoadingSnapshots] = useState(true)
   const [loadingSwaps, setLoadingSwaps] = useState(true)
 
   const WALLET_ADDRESS = "0x82e931E5958234331c21D155331eE6C3048a3935"
 
   useEffect(() => {
     refreshPortfolio()
-    refreshBalance()
+    refreshSnapshots()
     refreshSwaps()
   }, [])
 
@@ -103,20 +112,16 @@ export function WalletContextProvider({
     }
   }
 
-  async function refreshBalance() {
-    const WALLET_CREATION = 1746432138000
-
+  async function refreshSnapshots() {
     try {
-      setLoadingBalance(true)
-      const response = await fetch(
-        `/api/wallet/balance?from=${WALLET_CREATION}`
-      )
+      setLoadingSnapshots(true)
+      const response = await fetch(`/api/wallet/snapshots`)
       const data = await response.json()
-      setBalanceData(data)
+      setSnapshots(data)
     } catch (error) {
       console.error("Failed to fetch balance data:", error)
     } finally {
-      setLoadingBalance(false)
+      setLoadingSnapshots(false)
     }
   }
 
@@ -135,13 +140,13 @@ export function WalletContextProvider({
 
   const context: WalletContextProps = {
     portfolioAssets,
-    balanceData,
+    snapshots,
     swapHistory,
     loadingPortfolio,
-    loadingBalance,
+    loadingSnapshots,
     loadingSwaps,
     refreshPortfolio,
-    refreshBalance,
+    refreshSnapshots,
     refreshSwaps,
   }
 
