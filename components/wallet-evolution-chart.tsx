@@ -22,14 +22,24 @@ export function WalletEvolutionChart({
   const { refreshSnapshots } = useWallet()
 
   const filteredSnapshots = walletSnapshots.filter(
-    (snapshot) => snapshot.state === "before_sell"
+    (snapshot) => snapshot.state === "after_sell"
   )
 
   const chartData = filteredSnapshots.map((snapshot) => {
     const totalValue = snapshot.balances.reduce((sum, b) => sum + b.value, 0)
+
+    const beforeSaleSnapshot = getBeforeSaleStateByDate(snapshot.created_at)
+    const beforeSaleTotalValue = beforeSaleSnapshot.balances.reduce(
+      (sum, b) => sum + b.value,
+      0
+    )
+
+    const saleFeeLost = beforeSaleTotalValue - totalValue
+
     return {
       date: new Date(snapshot.created_at).toISOString(),
       totalValue,
+      saleFeeLost,
       tokens: snapshot.balances.map((b) => ({
         symbol: b.token.symbol,
         name: b.token.name,
@@ -39,6 +49,24 @@ export function WalletEvolutionChart({
       })),
     }
   })
+
+  function getBeforeSaleStateByDate(dateString: string | Date): WalletSnapshot {
+    const date = new Date(dateString)
+    date.setHours(0, 0, 0, 0)
+
+    const match = walletSnapshots.find((snapshot) => {
+      const snapshotDate = new Date(snapshot.created_at)
+      snapshotDate.setHours(0, 0, 0, 0)
+
+      return snapshotDate.getTime() === date.getTime()
+    })
+
+    if (!match) {
+      throw new Error("No before sale snapshot on date " + dateString)
+    }
+
+    return match
+  }
 
   return (
     <div className="w-full p-4 rounded-xl bg-white dark:bg-zinc-900 shadow-md">
@@ -97,8 +125,13 @@ const CustomTooltip = ({
             {format(new Date(label), "yyyy-MM-dd")}
           </div>
         )}
-        <div className="text-sm text-zinc-600 dark:text-zinc-300 mb-2">
-          Total value: ${data.totalValue.toFixed(2)}
+        <div className="flex flex-col mb-2">
+          <div className="text-sm text-zinc-600 dark:text-zinc-300">
+            Total value: ${data.totalValue.toFixed(2)}
+          </div>
+          <div className="text-xs text-zinc-600 dark:text-zinc-300">
+            Swap fees: ${data.saleFeeLost.toFixed(2)}
+          </div>
         </div>
         <div className="space-y-1 max-h-40 overflow-y-auto">
           {data.tokens
@@ -113,8 +146,7 @@ const CustomTooltip = ({
                   />
                 )}
                 <div className="text-xs text-zinc-600 dark:text-zinc-200">
-                  <strong>{token.symbol}</strong>: ${token.value.toFixed(2)} ( $
-                  {token.price.toFixed(2)})
+                  <strong>{token.symbol}</strong>: ${token.value.toFixed(2)}
                 </div>
               </div>
             ))}
@@ -122,6 +154,4 @@ const CustomTooltip = ({
       </div>
     )
   }
-
-  return null
 }
